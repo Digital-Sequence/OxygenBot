@@ -1,0 +1,13 @@
+#pragma once
+#include "catch_exit_signal.hpp"
+#include "initialize_database.hpp"
+#include "parse_cl_arguments.hpp"
+#include "parse_config.hpp"
+#include "register_events.hpp"
+#include "register_roles.hpp"
+#include "register_slashcommands.hpp"
+#include "secret.hpp"
+#include "shutdown.hpp"
+#include "spdlog_setup.hpp"
+#include "start_timer.hpp"
+#include "welcome_message.hpp"

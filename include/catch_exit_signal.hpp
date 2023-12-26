@@ -1,0 +1,1 @@
+void catch_exit_signal();
