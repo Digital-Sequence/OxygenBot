@@ -22,9 +22,7 @@ int main(int argc, char* argv[]) {
         /* Parse command line arguments */
         map<string, bool> cl_arguments_bool = {
             {"r", false},
-            {"i", false},
             {"register_commands", false},
-            {"initialize_DB", false}
         };
         map<string, string> cl_arguments = {
             {"c", ""},
@@ -61,13 +59,6 @@ int main(int argc, char* argv[]) {
                     "Registering slashcommands..."
                 );
                 register_slashcommands(bot);
-            };
-            if(cl_arguments_bool["i"] || cl_arguments_bool["initialize_DB"]) {
-                bot.log(
-                    dpp::ll_info,
-                    "Initializing database..."
-                );
-                initialize_database();
             };
             welcome_message();
         });

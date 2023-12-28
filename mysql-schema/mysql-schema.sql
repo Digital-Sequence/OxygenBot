@@ -1,0 +1,54 @@
+--
+-- Table structure for table `BANS`
+--
+
+DROP TABLE IF EXISTS `BANS`;
+CREATE TABLE `BANS` (
+  `rowid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `GUILD_ID` bigint(20) unsigned NOT NULL,
+  `USER_ID` bigint(20) unsigned NOT NULL,
+  `USERNAME` text DEFAULT NULL,
+  `EXPIRES` bigint(20) unsigned DEFAULT NULL,
+  PRIMARY KEY (`rowid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Table structure for table `MESSAGES`
+--
+
+DROP TABLE IF EXISTS `MESSAGES`;
+CREATE TABLE `MESSAGES` (
+  `rowid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `GUILD_ID` bigint(20) unsigned NOT NULL,
+  `CHANNEL_ID` bigint(20) unsigned NOT NULL,
+  `USER_ID` bigint(20) unsigned NOT NULL,
+  `MESSAGE_ID` bigint(20) unsigned NOT NULL,
+  PRIMARY KEY (`rowid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Table structure for table `MUTES`
+--
+
+DROP TABLE IF EXISTS `MUTES`;
+CREATE TABLE `MUTES` (
+  `rowid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `GUILD_ID` bigint(20) unsigned NOT NULL,
+  `USER_ID` bigint(20) unsigned NOT NULL,
+  `EXPIRES` bigint(20) unsigned DEFAULT NULL,
+  PRIMARY KEY (`rowid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Table structure for table `WARNS`
+--
+
+DROP TABLE IF EXISTS `WARNS`;
+CREATE TABLE `WARNS` (
+  `rowid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `GUILD_ID` bigint(20) unsigned NOT NULL,
+  `USER_ID` bigint(20) unsigned NOT NULL,
+  `COUNT` int(10) unsigned NOT NULL,
+  `EXPIRES` bigint(20) unsigned DEFAULT NULL,
+  PRIMARY KEY (`rowid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

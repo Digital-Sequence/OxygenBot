@@ -1,6 +1,5 @@
 #pragma once
 #include "catch_exit_signal.hpp"
-#include "initialize_database.hpp"
 #include "parse_cl_arguments.hpp"
 #include "parse_config.hpp"
 #include "register_events.hpp"
