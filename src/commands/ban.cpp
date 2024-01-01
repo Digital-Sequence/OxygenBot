@@ -16,13 +16,13 @@ using utils::slashcommand;
 
 string commands::ban(dpp::cluster& bot, slashcommand& event) {
     bot.set_audit_reason(event.reason).
-    guild_ban_add_sync(event.guild_id, event.user_id);
+    guild_ban_add_sync(event.guild_id, event.member_id);
 
     uint64_t rowid(0);
     DB_bind_vector binds;
     binds.push<uint64_t>(rowid, MYSQL_TYPE_LONGLONG);
     binds.push<uint64_t>(event.guild_id, MYSQL_TYPE_LONGLONG);
-    binds.push<uint64_t>(event.user_id, MYSQL_TYPE_LONGLONG);
+    binds.push<uint64_t>(event.member_id, MYSQL_TYPE_LONGLONG);
     long unsigned int length = event.member_username.length() + 1;
     char USERNAME[length];
     strcpy(USERNAME, event.member_username.c_str());

@@ -31,7 +31,7 @@ string commands::delete_messages(dpp::cluster& bot, slashcommand& event) {
     
     binds.push<uint64_t>(event.guild_id, MYSQL_TYPE_LONGLONG);
     binds.push<uint64_t>(event.channel_id, MYSQL_TYPE_LONGLONG);
-    binds.push<uint64_t>(event.user_id, MYSQL_TYPE_LONGLONG);
+    binds.push<uint64_t>(event.member_id, MYSQL_TYPE_LONGLONG);
     binds.push<uint64_t>(current_message_time, MYSQL_TYPE_LONGLONG);
     binds.push<int64_t>(event.messages_amount, MYSQL_TYPE_SHORT);
     

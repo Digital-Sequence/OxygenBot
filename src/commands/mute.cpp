@@ -23,10 +23,10 @@ string commands::mute(dpp::cluster& bot, slashcommand& event) {
         return
             string("Member ") + event.member_mention +
             " can't be muted. Reason: muted role is deleted by someone";
-    bot.guild_member_add_role(event.guild_id, event.user_id, muted_role);
+    bot.guild_member_add_role(event.guild_id, event.member_id, muted_role);
     DB_bind_vector binds;
     binds.push<uint64_t>(event.guild_id, MYSQL_TYPE_LONGLONG);
-    binds.push<uint64_t>(event.user_id, MYSQL_TYPE_LONGLONG);
+    binds.push<uint64_t>(event.member_id, MYSQL_TYPE_LONGLONG);
     string query =
         "SELECT rowid FROM bot.MUTES WHERE GUILD_ID = ? AND USER_ID = ?";
     bool muted = false;
@@ -47,7 +47,7 @@ string commands::mute(dpp::cluster& bot, slashcommand& event) {
     binds.clear();
     binds.push<uint64_t>(rowid, MYSQL_TYPE_LONGLONG);
     binds.push<uint64_t>(event.guild_id, MYSQL_TYPE_LONGLONG);
-    binds.push<uint64_t>(event.user_id, MYSQL_TYPE_LONGLONG);
+    binds.push<uint64_t>(event.member_id, MYSQL_TYPE_LONGLONG);
     if(event.duration) {
         EXPIRES = std::time(0) + event.duration;
         binds.push<uint64_t>(EXPIRES, MYSQL_TYPE_LONGLONG);

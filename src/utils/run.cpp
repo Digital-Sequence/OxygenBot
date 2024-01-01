@@ -9,6 +9,7 @@ using std::to_string;
 using commands::ban;
 using commands::delete_messages;
 using commands::delwarn;
+using commands::member_info;
 using commands::mute;
 using commands::unban;
 using commands::unmute;
@@ -31,9 +32,10 @@ void utils::run(dpp::cluster& bot, const dpp::slashcommand_t& event) {
         if(event_details.command_name == "mute")
             reply = mute(bot, event_details);
         if(event_details.command_name == "unmute")
-            reply = unmute(bot, event_details.guild_id, event_details.user_id,
-            event_details.reason
-        );
+            reply = unmute(
+                bot, event_details.guild_id, event_details.member_id,
+                event_details.reason
+            );
         // if(command_name == "kick") {
         //     commands::kick(event_details, bot);
         //     return;
@@ -49,7 +51,10 @@ void utils::run(dpp::cluster& bot, const dpp::slashcommand_t& event) {
                 event_details.reason
             );
         }
-        event.reply(reply);
+        if(event_details.command_name == "member_info")
+            reply = member_info(bot, event_details);
+        // if statement, for commands that don't reply (will be added in future)
+        if(reply != "") event.reply(reply);
     } catch(const dpp::rest_exception& error) {
         bot.log(dpp::ll_error, error.what());
         event.reply(

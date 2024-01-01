@@ -105,7 +105,13 @@ void register_slashcommands(dpp::cluster& bot) {
             set_application_id(bot.me.id).
             set_default_permissions(ban_p).
             add_option(member_username).
-            add_option(reason)
+            add_option(reason),
+        slashcommand().
+            set_name("member_info").
+            set_description("Get member info").
+            set_application_id(bot.me.id).
+            set_default_permissions(dpp::p_use_application_commands).
+            add_option(member)
     };
     commands[0].options[0].description = "The chatterbox";
     commands[0].options[1].required = true;
@@ -116,6 +122,9 @@ void register_slashcommands(dpp::cluster& bot) {
     commands[5].options[0].description = "The fool to kick";
     commands[6].options[0].description = "The villain to ban";
     commands[7].options[0].description = "The member to unban";
+    commands[8].options[0].description =
+        "If no member provided, your info will be shown";
+    commands[8].options[0].required = false;
 
     bot.global_bulk_command_create(commands);
 }

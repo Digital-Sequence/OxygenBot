@@ -13,7 +13,7 @@ using utils::slashcommand;
 string commands::delwarn(dpp::cluster& bot, slashcommand& event) {
     DB_bind_vector binds;
     binds.push<uint64_t>(event.guild_id, MYSQL_TYPE_LONGLONG);
-    binds.push<uint64_t>(event.user_id, MYSQL_TYPE_LONGLONG);
+    binds.push<uint64_t>(event.member_id, MYSQL_TYPE_LONGLONG);
     string query =
         "SELECT rowid,COUNT FROM bot.WARNS WHERE GUILD_ID = ? AND USER_ID = ?";
     int c(0);
