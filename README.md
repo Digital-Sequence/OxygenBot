@@ -40,7 +40,7 @@ make
 ```
 
 ## How to setup
-1. Configure MySQL (find how to do it for your OS)
+1. Configure MySQL (find how to do it in your OS)
 2. Create user with administrative rights in MySQL (https://tableplus.com/blog/2018/10/how-to-create-a-superuser-in-mysql.html)
 3. If you're using MySQL Workbench open file->run sql script, and choose mysql-schema/mysql-schema.sql
 4. Create ~/.config/oxygenBot/config
