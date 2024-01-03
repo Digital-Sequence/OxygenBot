@@ -17,7 +17,8 @@ string commands::member_info(dpp::cluster& bot, slashcommand& event) {
             string("\nGlobal Name: ") + event.member_global_name +
             // code block used to discard formatting. Example: ___username___
             string("\nUsername: `") + event.member_username +
-            string("`\nNickname: ") + event.member_nickname + string("\nBot: ");
+            string("`\nNickname: ") + event.member_nickname +
+            string("\nBot: ");
         if(event.member_bot) reply = reply + " true";
         else reply = reply + " false";
         reply = 
@@ -30,7 +31,8 @@ string commands::member_info(dpp::cluster& bot, slashcommand& event) {
             string("Snowflake: ") + to_string(event.sender_id) +
             string("\nGlobal Name: ") + event.sender_global_name +
             string("\nUsername: `") + event.sender_username +
-            string("`\nNickname: ") + event.sender_nickname + string("\nBot: ");
+            string("`\nNickname: ") + event.sender_nickname +
+            string("\nBot: ");
         if(event.sender_bot) reply = reply + " true";
         else reply = reply + " false";
         reply = 

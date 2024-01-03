@@ -35,9 +35,11 @@ int main(int argc, char* argv[]) {
         else if(cl_arguments["config"] != "")
             config_path = cl_arguments["config"];
         else {
-            config_path = string("/home/") + string(getenv("USER")) + "/.config/oxygenBot";
+            config_path =
+            string("/home/") + string(getenv("USER")) + "/.config/oxygenBot";
             struct stat sb;
-            if(stat(config_path.c_str(), &sb)) mkdir(config_path.c_str(), 0755);
+            if(stat(config_path.c_str(), &sb))
+                mkdir(config_path.c_str(), 0755);
             config_path = config_path + "/config";
         };
         parse_config();
@@ -53,7 +55,10 @@ int main(int argc, char* argv[]) {
             register_roles(bot);
             register_events(bot);
             start_timer(bot);
-            if(cl_arguments_bool["r"] || cl_arguments_bool["register_commands"]) {
+            if(
+                cl_arguments_bool["r"] ||
+                cl_arguments_bool["register_commands"]
+            ) {
                 bot.log(
                     dpp::ll_info,
                     "Registering slashcommands..."

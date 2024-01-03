@@ -4,7 +4,6 @@
 #include "commands/delwarn.hpp"
 #include "commands/member_info.hpp"
 #include "commands/mute.hpp"
-#include "commands/stats.hpp"
 #include "commands/unban.hpp"
 #include "commands/unmute.hpp"
 #include "commands/warn.hpp"

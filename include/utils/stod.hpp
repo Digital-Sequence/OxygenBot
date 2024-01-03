@@ -17,7 +17,7 @@ namespace utils {
                 w - weeks
                 y - years
         It's allowed to use mutliple units in any order,
-        separated with space. Example: 1y 3w (1 year, 3 weeks)
+        separated by space. Example: 1y 3w (1 year, 3 weeks)
         When you specify too long duration (9000y, for example)
         the result will be maximum unsigned int value.
 */
