@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(OxygenBot VERSION 0.2.0 DESCRIPTION "All-in-one discord bot which is necessary for your server" LANGUAGES CXX)
+project(OxygenBot VERSION 0.2.2 DESCRIPTION "All-in-one discord bot which is necessary for your server" LANGUAGES CXX)
 
 find_library(LIBRARY_DPP dpp)
 find_library(LIBRARY_FMT fmt)
