@@ -2,7 +2,7 @@
 #include <sys/stat.h>
 #include "bot.hpp"
 #include "Connection_pool.hpp"
-#include "constants.hpp"
+#include "globals.hpp"
 
 using std::invalid_argument;
 using std::map;

@@ -1,5 +1,5 @@
 #include <stdexcept>
-#include "constants.hpp"
+#include "globals.hpp"
 #include "utils/DB_connect.hpp"
 
 void utils::DB_connect(MYSQL*& con) {

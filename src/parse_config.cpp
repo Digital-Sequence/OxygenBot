@@ -5,7 +5,7 @@
 #include <string>
 #include <sys/stat.h>
 #include "parse_config.hpp"
-#include "constants.hpp"
+#include "globals.hpp"
 
 using std::map;
 using std::runtime_error;
