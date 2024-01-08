@@ -3,7 +3,6 @@
 #include "parse_cl_arguments.hpp"
 #include "parse_config.hpp"
 #include "register_events.hpp"
-#include "register_roles.hpp"
 #include "register_slashcommands.hpp"
 #include "secret.hpp"
 #include "shutdown.hpp"

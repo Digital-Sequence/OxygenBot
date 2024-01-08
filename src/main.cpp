@@ -12,8 +12,6 @@ using std::runtime_error;
 using dpp::snowflake;
 
 Connection_pool connections;
-map<snowflake, map<snowflake, string>> roles;
-map<snowflake, snowflake> muted_roles;
 string config_path;
 map<string, string> config;
 
@@ -52,7 +50,6 @@ int main(int argc, char* argv[]) {
         spdlog_setup(bot);
 
         bot.on_ready([&bot, &cl_arguments_bool](const dpp::ready_t& event) {
-            register_roles(bot);
             register_events(bot);
             start_timer(bot);
             if(
