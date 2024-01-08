@@ -40,6 +40,19 @@ CREATE TABLE `MUTES` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
+-- Table structure for table `ROLES`
+--
+
+DROP TABLE IF EXISTS `ROLES`;
+CREATE TABLE `ROLES` (
+  `rowid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `GUILD_ID` bigint(20) unsigned NOT NULL,
+  `ROLE_ID` bigint(20) unsigned NOT NULL,
+  `NAME` text DEFAULT NULL,
+  PRIMARY KEY (`rowid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
 -- Table structure for table `WARNS`
 --
 
