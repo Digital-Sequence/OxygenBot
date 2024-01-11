@@ -1,9 +1,16 @@
 --
+-- bot schema
+--
+
+DROP DATABASE bot;
+CREATE DATABASE bot;
+
+--
 -- Table structure for table `BANS`
 --
 
-DROP TABLE IF EXISTS `BANS`;
-CREATE TABLE `BANS` (
+DROP TABLE IF EXISTS `bot`.`BANS`;
+CREATE TABLE `bot`.`BANS` (
   `rowid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `GUILD_ID` bigint(20) unsigned NOT NULL,
   `USER_ID` bigint(20) unsigned NOT NULL,
@@ -16,8 +23,8 @@ CREATE TABLE `BANS` (
 -- Table structure for table `MESSAGES`
 --
 
-DROP TABLE IF EXISTS `MESSAGES`;
-CREATE TABLE `MESSAGES` (
+DROP TABLE IF EXISTS `bot`.`MESSAGES`;
+CREATE TABLE `bot`.`MESSAGES` (
   `rowid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `GUILD_ID` bigint(20) unsigned NOT NULL,
   `CHANNEL_ID` bigint(20) unsigned NOT NULL,
@@ -30,8 +37,8 @@ CREATE TABLE `MESSAGES` (
 -- Table structure for table `MUTES`
 --
 
-DROP TABLE IF EXISTS `MUTES`;
-CREATE TABLE `MUTES` (
+DROP TABLE IF EXISTS `bot`.`MUTES`;
+CREATE TABLE `bot`.`MUTES` (
   `rowid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `GUILD_ID` bigint(20) unsigned NOT NULL,
   `USER_ID` bigint(20) unsigned NOT NULL,
@@ -43,8 +50,8 @@ CREATE TABLE `MUTES` (
 -- Table structure for table `ROLES`
 --
 
-DROP TABLE IF EXISTS `ROLES`;
-CREATE TABLE `ROLES` (
+DROP TABLE IF EXISTS `bot`.`ROLES`;
+CREATE TABLE `bot`.`ROLES` (
   `rowid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `GUILD_ID` bigint(20) unsigned NOT NULL,
   `ROLE_ID` bigint(20) unsigned NOT NULL,
@@ -56,8 +63,8 @@ CREATE TABLE `ROLES` (
 -- Table structure for table `WARNS`
 --
 
-DROP TABLE IF EXISTS `WARNS`;
-CREATE TABLE `WARNS` (
+DROP TABLE IF EXISTS `bot`.`WARNS`;
+CREATE TABLE `bot`.`WARNS` (
   `rowid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `GUILD_ID` bigint(20) unsigned NOT NULL,
   `USER_ID` bigint(20) unsigned NOT NULL,
