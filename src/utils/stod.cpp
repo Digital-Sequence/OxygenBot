@@ -41,25 +41,25 @@ void compile_number(
     if(prev > duration) {
         duration = prev;
         return;
-    };
+    }
     prev = duration;
     duration += number_parts['d'] * in_seconds['d'];
     if(prev > duration) {
         duration = prev;
         return;
-    };
+    }
     prev = duration;
     duration += number_parts['h'] * in_seconds['h'];
     if(prev > duration) {
         duration = prev;
         return;
-    };
+    }
     prev = duration;
     duration += number_parts['m'] * in_seconds['m'];
     if(prev > duration) {
         duration = prev;
         return;
-    };
+    }
     prev = duration;
     duration += number_parts['s'];
     if(prev > duration) duration = prev;
@@ -78,8 +78,8 @@ void utils::stod(
     };
 
     char c;
-    duration        = 0;
-    uint32_t t      = 0;
+    duration = 0;
+    uint32_t t(0);
     bool next       = true;
     int line_length = line.length();
     
@@ -94,7 +94,7 @@ void utils::stod(
             } else {
                 duration = t;
                 return;
-            };
+            }
         } else if(is_units(c)) {
             if(next) throw invalid_argument("two modificators in a row");
             if(t >= units_limits[c]) {
@@ -107,12 +107,12 @@ void utils::stod(
             }
         } else
             throw invalid_argument(string("wrong modificator '") + c + "'");
-    };
+    }
 
     if(!next) throw invalid_argument("number without modificator");
 
     compile_number(number_parts, duration);
     if(duration < 10) {
         throw invalid_argument("duration is less than 10");
-    };
+    }
 }

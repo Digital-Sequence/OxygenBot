@@ -28,8 +28,7 @@ string commands::delwarn(dpp::cluster& bot, slashcommand& event) {
         if(!rowid) return;
         c = COUNT - 1;
         if(COUNT == 1) {
-            string query =
-                "DELETE FROM bot.WARNS WHERE rowid = ?";
+            string query = "DELETE FROM bot.WARNS WHERE rowid = ?";
             binds.clear();
             binds.push<uint64_t>(rowid, MYSQL_TYPE_LONGLONG);
             DB_exec(query, binds);

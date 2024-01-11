@@ -30,8 +30,7 @@ string commands::warn(dpp::cluster& bot, slashcommand& event) {
         if(!rowid) return;
         c = COUNT + 1;
         if(COUNT == 2) {
-            string query =
-                "DELETE FROM bot.WARNS WHERE rowid = ?";
+            string query = "DELETE FROM bot.WARNS WHERE rowid = ?";
             binds.clear();
             binds.push<uint64_t>(rowid, MYSQL_TYPE_LONGLONG);
             DB_exec(query, binds);
@@ -47,8 +46,7 @@ string commands::warn(dpp::cluster& bot, slashcommand& event) {
         mysql_free_result(prepare_meta_result);
     });
     if(!c) {
-        query =
-            "INSERT INTO bot.WARNS VALUES(?, ?, ?, ?, ?)";
+        query = "INSERT INTO bot.WARNS VALUES(?, ?, ?, ?, ?)";
         binds.clear();
         uint64_t rowid(0);
         int COUNT(1);
@@ -59,7 +57,8 @@ string commands::warn(dpp::cluster& bot, slashcommand& event) {
         binds.push();
         DB_exec(query, binds);
         return
-            string("Done! Member ") + event.member_mention + " has 1/3 warnings";
+            string("Done! Member ") + event.member_mention +
+            " has 1/3 warnings";
     }
     if(c == 3)
         return

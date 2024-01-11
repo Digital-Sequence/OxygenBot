@@ -6,7 +6,7 @@ using std::to_string;
 
 string utils::date_str(const time_t& unix_timestamp) {
     tm* tm_date = gmtime(&unix_timestamp);
-    string result = "";
+    string result;
     if(!(tm_date->tm_mday / 10))
         result = '0' + to_string(tm_date->tm_mday) + string(".");
     else result = to_string(tm_date->tm_mday) + '.';

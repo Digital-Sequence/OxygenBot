@@ -14,8 +14,8 @@ using utils::DB_bind_vector;
 void events::on_message_delete_bulk(dpp::cluster& bot) {
     bot.on_message_delete_bulk(
         [&bot](const dpp::message_delete_bulk_t& event) {
-            snowflake GUILD_ID          = event.deleting_guild->id;
-            snowflake CHANNEL_ID        = event.deleting_channel->id;
+            snowflake GUILD_ID      = event.deleting_guild->id;
+            snowflake CHANNEL_ID    = event.deleting_channel->id;
             snowflake MESSAGE_ID(0);
             try {
                 vector<snowflake> messages  = event.deleted;
@@ -31,12 +31,12 @@ void events::on_message_delete_bulk(dpp::cluster& bot) {
                 for(auto& i : messages) {
                     MESSAGE_ID = i;
                     utils::DB_exec(query, binds);
-                };
+                }
             } catch(const runtime_error& error) {
                 bot.log(
                     dpp::ll_error,
                     to_string(GUILD_ID) +
-                    string("| error occured while deleting message. ") +
+                    string("| error occured while deleting message info. ") +
                     error.what()
                 );
             }

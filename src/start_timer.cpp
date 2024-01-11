@@ -45,7 +45,7 @@ void start_timer(dpp::cluster& bot) {
                         string query = "DELETE FROM bot.BANS WHERE rowid = ?";
                         DB_exec(query, binds_delete);
                         unban(bot, GUILD_ID, USER_ID);
-                    };
+                    }
                     mysql_free_result(prepare_meta_result);
                 }
             );
@@ -55,7 +55,7 @@ void start_timer(dpp::cluster& bot) {
             DB_exec(
                 query, binds,
                 [&bot, &GUILD_ID, &USER_ID](MYSQL_STMT* statement) {
-                    uint64_t  rowid = 0;
+                    uint64_t rowid(0);
                     DB_bind_vector binds;
                     binds.push<uint64_t>(rowid, MYSQL_TYPE_LONGLONG);
                     binds.push<uint64_t>(GUILD_ID, MYSQL_TYPE_LONGLONG);
@@ -73,10 +73,11 @@ void start_timer(dpp::cluster& bot) {
                         } catch(const dpp::rest_exception& error) {
                             bot.log(
                                 dpp::ll_info,
-                                string("Cannot unmute ") + user_mention(USER_ID) +
-                                string("Reason: ") + error.what()
+                                string("Cannot unmute ") +
+                                user_mention(USER_ID) + string("Reason: ") +
+                                error.what()
                             );
-                        };
+                        }
                     };
                     mysql_free_result(prepare_meta_result);
                 }

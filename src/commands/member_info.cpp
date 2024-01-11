@@ -10,7 +10,7 @@ using utils::slashcommand;
 using utils::time_str;
 
 string commands::member_info(dpp::cluster& bot, slashcommand& event) {
-    string reply = "";
+    string reply;
     if(event.member_id) {
         reply =
             string("Snowflake: ") + to_string(event.member_id) +

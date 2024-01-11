@@ -14,8 +14,8 @@ MYSQL_RES* utils::DB_fetch_prepare(MYSQL_STMT* statement, DB_bind_vector& binds)
     // if(!column_count) {
     //     mysql_free_result(prepare_meta_result);
     //     return 0;
-    // };
+    // }
     if(mysql_stmt_bind_result(statement, binds.data()))
         throw runtime_error(mysql_stmt_error(statement));
     return prepare_meta_result;
-};
+}

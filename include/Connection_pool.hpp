@@ -16,7 +16,7 @@ class Connection_pool {
 			connection_pool.push(con);
 			locked = false;
 			condition.notify_one();
-		};
+		}
 		MYSQL* pop() {
 			std::unique_lock<std::mutex> lock(mx);
 			locked = true;
@@ -25,10 +25,10 @@ class Connection_pool {
 			locked = false;
 			condition.notify_one();
 			return element;
-		};
+		}
 		bool empty() {
 			return connection_pool.empty();
-		};
+		}
 		int size() {
 			return connection_pool.size();
 		}

@@ -28,9 +28,9 @@ int main(int argc, char* argv[]) {
         };
         parse_cl_arguments(argc, cl_arguments_bool, cl_arguments, argv);
         
-        if(cl_arguments["c"] != "")
+        if(!cl_arguments["c"].empty())
             config_path = cl_arguments["c"];
-        else if(cl_arguments["config"] != "")
+        else if(!cl_arguments["config"].empty())
             config_path = cl_arguments["config"];
         else {
             config_path =
@@ -39,9 +39,9 @@ int main(int argc, char* argv[]) {
             if(stat(config_path.c_str(), &sb))
                 mkdir(config_path.c_str(), 0755);
             config_path = config_path + "/config";
-        };
+        }
         parse_config();
-        if(config["token"] == "") config["token"] = secret();
+        if(config["token"].empty()) config["token"] = secret();
         
         dpp::cluster bot(
             config["token"], dpp::i_default_intents | dpp::i_message_content
@@ -61,7 +61,7 @@ int main(int argc, char* argv[]) {
                     "Registering slashcommands..."
                 );
                 register_slashcommands(bot);
-            };
+            }
             welcome_message();
         });
 

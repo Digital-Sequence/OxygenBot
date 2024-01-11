@@ -22,17 +22,17 @@ void parse_config() {
         string line;
         while(getline(config_file, line)) {
             if(!line.length() || line[0] == '#') continue;
-            int i = 0;
+            int i(0);
             while(i < line.length() && isspace(line[i])) i++;
             if(i == line.length()) continue;
             i = 0;
-            string parameter = "";
+            string parameter;
             while(line[i] != '=') {
                 parameter = parameter + line[i];
                 if(++i == line.length()) throw runtime_error(
                     string("parameter \"") + parameter + "\" value not specified"
                 );
-            };
+            }
             if(config_parameters.find(parameter) == config_parameters.end())
                 throw runtime_error(
                     string("parameter \"") + parameter + "\" isn't allowed"
@@ -45,4 +45,4 @@ void parse_config() {
         }
         config_file.close(); //close the file object.
     } else throw runtime_error("cannot open config file");
-};
+}

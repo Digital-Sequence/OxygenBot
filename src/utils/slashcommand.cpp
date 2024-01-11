@@ -40,19 +40,14 @@ utils::slashcommand::slashcommand(
     sender_joined       = command.member.joined_at;
     sender_registered   = ((sender_id >> 22) + 1420070400000) / 1000;
     member_id           = 0;
-    member_username     = "";
-    member_global_name  = "";
-    member_nickname     = "";
     member_bot          = false;
-    member_mention      = "";
     member_joined       = 0;
     member_registered   = 0;
     duration            = 0;
     messages_amount     = 0;
-    reason              = "";
     
     original_message = '/' + command_name;
-    string duration_str = "";
+    string duration_str;
     for(auto& i : options) {
         if(i.name == "member") {
             member_id           =
@@ -66,29 +61,29 @@ utils::slashcommand::slashcommand(
             member_joined       = member.joined_at;
             member_registered   = ((member_id >> 22) + 1420070400000) / 1000;
             original_message    = original_message + ' ' + member_mention;
-        };
-        if(i.name == "member_username" && member_username != "") {
+        }
+        if(i.name == "member_username" && !member_username.empty()) {
             member_username =
                 get<string>(event.get_parameter("member_username"));
                 original_message = original_message + " " + member_username;
-        };
+        }
         if(i.name == "duration") {
             duration_str = get<string>(i.value);
             original_message = original_message + " duration: " + duration_str;
-        };
+        }
         if(i.name == "messages_amount") {
             messages_amount = get<int64_t>(i.value);
             original_message = original_message + " messages_amount: " +
             to_string(messages_amount);
-        };
+        }
         if(i.name == "reason") {
             reason = get<string>(i.value);
             original_message = original_message + " reason: " + reason;
-        };
-    };
+        }
+    }
 
-    if(member_username == "" && member_id)
+    if(member_username.empty() && member_id)
         member_username = command.get_resolved_user(member_id).username;
 
-    if(duration_str != "") stod(duration_str, duration);
+    if(!duration_str.empty()) stod(duration_str, duration);
 }

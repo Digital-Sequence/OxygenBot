@@ -23,15 +23,15 @@ void parse_cl_arguments(
         if(argv[i][0] == '-') {
             double_hyphen = true;
             argv[i]++;
-        };
+        }
         if(!argv[i][0])
             throw invalid_argument("provided '-' with no value");
-        string argument = "";
+        string argument;
         while(argv[i][0] && argv[i][0] != '=') {
             argument = argument +
                 (char)std::tolower(static_cast<unsigned char>(argv[i][0]));
             argv[i]++;
-        };
+        }
         try {
             if(double_hyphen) {
                 cl_arguments_bool.at(argument);
@@ -40,11 +40,11 @@ void parse_cl_arguments(
                 for(int j = 0; j < argument.length(); j++) {
                     cl_arguments_bool.at(string(1, argument[j]));
                     cl_arguments_bool[string(1, argument[j])] = true;
-                };
+                }
             }
-            argument = "";
+            argument.clear();
         } catch(const std::out_of_range& ex) {};
-        if(argument == "") continue;
+        if(argument.empty()) continue;
         try {
             cl_arguments.at(argument);
             if(double_hyphen) {
@@ -66,14 +66,14 @@ void parse_cl_arguments(
                 );
                 cl_arguments[argument] = argv[i];
             }
-            argument = "";
+            argument.clear();
         } catch(const std::out_of_range& ex) {};
-        if(argument != "") {
+        if(!argument.empty()) {
             string message = "argument '-";
             if(double_hyphen) message = message + '-';
             throw invalid_argument(
-            message + argument + "' is invalid"
-        );
+                message + argument + "' is invalid"
+            );
         }
-    };
+    }
 }

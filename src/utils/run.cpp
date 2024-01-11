@@ -22,7 +22,7 @@ void utils::run(dpp::cluster& bot, const dpp::slashcommand_t& event) {
     try {
         slashcommand event_details(event);
         bot.log(dpp::ll_info, "received " + event_details.original_message);
-        string reply = "";
+        string reply;
 
         if(event_details.command_name == "warn")
             reply = warn(bot, event_details);
@@ -61,7 +61,7 @@ void utils::run(dpp::cluster& bot, const dpp::slashcommand_t& event) {
             reply = sync_roles(bot, event_details);
         }
         // if statement, for commands that don't reply (will be added in future)
-        if(reply != "")
+        if(!reply.empty())
             if(thinking) event.edit_response(reply);
             else event.reply(reply);
     } catch(const dpp::rest_exception& error) {

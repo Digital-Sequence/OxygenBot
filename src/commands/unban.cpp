@@ -19,7 +19,7 @@ string commands::unban(
     string reply =
         string("Done! ") + user_mention(USER_ID) +
         string(" has been unbanned");
-    if(reason != "") reply = reply + ". Reason: " + reason;
+    if(!reason.empty()) reply = reply + ". Reason: " + reason;
     return reply;
 }
 
@@ -27,7 +27,7 @@ string commands::unban(
     dpp::cluster& bot, snowflake GUILD_ID, char* USERNAME,
     const string reason
 ) {
-    string reply = "";
+    string reply;
     snowflake USER_ID(0);
     string query =
         "SELECT USER_ID FROM bot.BANS WHERE GUILD_ID = ? AND USERNAME = ?";
@@ -49,6 +49,6 @@ string commands::unban(
     if(!USER_ID) return "Member isn't banned";
     bot.guild_ban_delete_sync(GUILD_ID, USER_ID);
     reply = string("Done! ") + user_mention(USER_ID) + " has been unbanned";
-    if(reason != "") reply = reply + ". Reason: " + reason;
+    if(!reason.empty()) reply = reply + ". Reason: " + reason;
     return reply;
 }

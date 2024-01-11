@@ -32,11 +32,11 @@ string commands::ban(dpp::cluster& bot, slashcommand& event) {
     else {
         EXPIRES = std::time(0) + event.duration;
         binds.push<uint64_t>(EXPIRES, MYSQL_TYPE_LONGLONG);
-    };
+    }
     string query = "INSERT INTO bot.BANS VALUES(?, ?, ?, ?, ?)";
     DB_exec(query, binds);
     if(event.messages_amount) delete_messages(bot, event);
     string reply = string("Done! User ") + event.member_mention + " has been banned";
-    if(event.reason != "") reply = reply + ". Reason: " + event.reason;
+    if(!event.reason.empty()) reply = reply + ". Reason: " + event.reason;
     return reply;
 }

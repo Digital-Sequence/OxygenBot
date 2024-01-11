@@ -10,6 +10,6 @@ void shutdown(dpp::cluster& bot) {
     while(connections.size()) {
         MYSQL* con = connections.pop();
         mysql_close(con);
-    };
+    }
 	mysql_library_end();
 }

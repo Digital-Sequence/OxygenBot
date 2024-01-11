@@ -58,17 +58,17 @@ string commands::delete_messages(dpp::cluster& bot, slashcommand& event) {
             "Done! 0 messages of " + event.member_mention + string(" deleted");
         if(event.reason != "") reply = reply + ". Reason: " + event.reason;
         return reply;
-    };
+    }
     for(int i = messages.size(); i > 0; i = messages.size()) {
         if(i > 100) i = 100;
         vector<snowflake> messages_to_delete;
         for(int j = 0; j < i; j++) {
             messages_to_delete.push_back(messages.front());
             messages.pop();
-        };
+        }
         bot.set_audit_reason(event.reason).
         message_delete_bulk(messages_to_delete, event.channel_id);
-    };
+    }
     string reply =
         "Done! " + to_string(amount) + " messages of " +
         event.member_mention + string(" deleted");

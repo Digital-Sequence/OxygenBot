@@ -33,7 +33,7 @@ void events::on_message_create(dpp::cluster& bot) {
                 bot.log(
                     dpp::ll_error,
                     to_string(GUILD_ID) +
-                    string("| error occured while saving message. ") +
+                    string("| error occured while saving message info. ") +
                     error.what()
                 );
             }

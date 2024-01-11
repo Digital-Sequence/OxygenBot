@@ -12,7 +12,7 @@ MYSQL_STMT* utils::DB_create_statement(
 	if(!statement) {
 		runtime_error error("out of memory { mysql_stmt_init() }");
 		throw error;
-	};
+	}
 
 	int result = mysql_stmt_prepare(statement, query.c_str(), query.length());
 	
@@ -26,7 +26,7 @@ MYSQL_STMT* utils::DB_create_statement(
 				string(error.what()) + "->" + string(e.what())
 			);
 		}
-  	};
+  	}
 
 	if(binds) {
 		result = mysql_stmt_bind_param(statement, binds);
@@ -41,7 +41,7 @@ MYSQL_STMT* utils::DB_create_statement(
 				);
 			}
 		}
-	};
+	}
 
 	return statement;
 }

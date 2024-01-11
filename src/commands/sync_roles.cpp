@@ -69,7 +69,7 @@ string commands::sync_roles(dpp::cluster& bot, const slashcommand& event) {
     int deleted(0);
     int renamed(0);
     for(const auto& i : guild_roles) {
-        if(DB_roles[i.first].second == "") {
+        if(DB_roles[i.first].second.empty()) {
             rowid = 0;
             ROLE_ID = i.first;
             strcpy(NAME, i.second.name.c_str());
@@ -89,7 +89,7 @@ string commands::sync_roles(dpp::cluster& bot, const slashcommand& event) {
     binds.clear();
     binds.push<uint64_t>(rowid, MYSQL_TYPE_LONGLONG);
     for(const auto& i : DB_roles)
-        if(guild_roles[i.first].name == "") {
+        if(guild_roles[i.first].name.empty()) {
             rowid = i.second.first;
             DB_exec(query, binds);
             deleted++;

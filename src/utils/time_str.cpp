@@ -6,7 +6,7 @@ using std::to_string;
 
 string utils::time_str(const time_t& unix_timestamp) {
     tm* tm_time = gmtime(&unix_timestamp);
-    string result = "";
+    string result;
     if(!(tm_time->tm_hour / 10))
     result = '0' + to_string(tm_time->tm_hour) + string(":");
     else result = to_string(tm_time->tm_hour) + ':';

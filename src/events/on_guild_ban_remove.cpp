@@ -21,13 +21,12 @@ void events::on_guild_ban_remove(dpp::cluster& bot) {
                 binds.push<uint64_t>(USER_ID, MYSQL_TYPE_LONGLONG);
                 string query =
                     "DELETE FROM bot.BANS WHERE GUILD_ID = ? AND USER_ID = ?";
-
                 utils::DB_exec(query, binds);
             } catch(const runtime_error& error) {
                 bot.log(
                     dpp::ll_error,
                     to_string(GUILD_ID) +
-                    string("| error occured while saving message. ") +
+                    string("| error occured while saving ban info. ") +
                     error.what()
                 );
             }

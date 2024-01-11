@@ -29,7 +29,7 @@ void events::on_message_delete(dpp::cluster& bot) {
                 bot.log(
                     dpp::ll_error,
                     to_string(GUILD_ID) +
-                    string("| error occured while deleting message. ") +
+                    string("| error occured while deleting message info. ") +
                     error.what()
                 );
             }

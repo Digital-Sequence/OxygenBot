@@ -11,8 +11,7 @@ void catch_exit_signal() {
     sigemptyset(&sigIntHandler.sa_mask);
     sigIntHandler.sa_flags = 0;
 
-
     while(isRunning) {
         sigaction(SIGINT, &sigIntHandler, 0);
-    };
+    }
 }
