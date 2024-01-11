@@ -5,7 +5,6 @@
 #include "utils/DB_bind_vector.hpp"
 #include "utils/DB_exec.hpp"
 #include "utils/DB_fetch_prepare.hpp"
-#include "utils/slashcommand.hpp"
 
 using std::string;
 using std::to_string;

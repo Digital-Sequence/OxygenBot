@@ -17,7 +17,7 @@ using utils::slashcommand;
 
 string commands::delete_messages(dpp::cluster& bot, slashcommand& event) {
     DB_bind_vector binds;
-    uint64_t current_message_time =
+    uint64_t two_weeks_ago =
         1000 * ((uint64_t)std::time(0) - 1209570 - 1420070400) << 22;
     /*
         1000 * (Current time - (2 weeks - 30 seconds) - 1420070400)
@@ -32,7 +32,7 @@ string commands::delete_messages(dpp::cluster& bot, slashcommand& event) {
     binds.push<uint64_t>(event.guild_id, MYSQL_TYPE_LONGLONG);
     binds.push<uint64_t>(event.channel_id, MYSQL_TYPE_LONGLONG);
     binds.push<uint64_t>(event.member_id, MYSQL_TYPE_LONGLONG);
-    binds.push<uint64_t>(current_message_time, MYSQL_TYPE_LONGLONG);
+    binds.push<uint64_t>(two_weeks_ago, MYSQL_TYPE_LONGLONG);
     binds.push<int64_t>(event.messages_amount, MYSQL_TYPE_SHORT);
     
     string query =
