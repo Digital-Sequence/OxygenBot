@@ -16,7 +16,14 @@ using utils::stod;
 
 utils::slashcommand::slashcommand(
     const dpp::slashcommand_t& event
-) {
+): guild(event.command.get_guild()) {
+    /* 
+        get_guild() make request to discord (if I'm no mistaken, check DPP
+        source code). This means, your bot will be rate limited, if there're
+        a lot of requests. This applies to get_issuing_user, and other
+        functions like this. You can read in dpp source code realization of
+        these functions. It's better to use cache (find_guild() for example)
+    */
     vector<command_data_option> options =
         event.command.get_command_interaction().options;
     dpp::interaction command = event.command;

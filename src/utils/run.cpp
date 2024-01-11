@@ -11,6 +11,7 @@ using commands::delete_messages;
 using commands::delwarn;
 using commands::member_info;
 using commands::mute;
+using commands::sync_roles;
 using commands::unban;
 using commands::unmute;
 using commands::warn;
@@ -53,8 +54,16 @@ void utils::run(dpp::cluster& bot, const dpp::slashcommand_t& event) {
         }
         if(event_details.command_name == "member_info")
             reply = member_info(bot, event_details);
+        bool thinking = false;
+        if(event_details.command_name == "sync_roles") {
+            event.thinking();
+            thinking = true;
+            reply = sync_roles(bot, event_details);
+        }
         // if statement, for commands that don't reply (will be added in future)
-        if(reply != "") event.reply(reply);
+        if(reply != "")
+            if(thinking) event.edit_response(reply);
+            else event.reply(reply);
     } catch(const dpp::rest_exception& error) {
         bot.log(dpp::ll_error, error.what());
         event.reply(
@@ -62,7 +71,7 @@ void utils::run(dpp::cluster& bot, const dpp::slashcommand_t& event) {
             "or wrong command usage. In first case, contact admin"
         );
     } catch(const dpp::logic_exception& error) {
-        event.reply("Member has already been banned");
+        event.reply("Wrong command usage (logic exception)");
     } catch(const std::invalid_argument& error) {
         event.reply(string("Command failed: Reason: ") + error.what());
     } catch(const std::runtime_error& error) {

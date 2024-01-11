@@ -37,6 +37,7 @@ uint64_t warn_p =   dpp::p_ban_members  |
 uint64_t mute_p = dpp::p_moderate_members | delete_messages_p;
 uint64_t ban_p  = dpp::p_ban_members | delete_messages_p;
 uint64_t kick_p = dpp::p_kick_members | delete_messages_p;
+uint64_t sync_p = dpp::p_administrator;
 
 void register_slashcommands(dpp::cluster& bot) {
     messages_amount.set_min_value(10);
@@ -111,7 +112,12 @@ void register_slashcommands(dpp::cluster& bot) {
             set_description("Get member info").
             set_application_id(bot.me.id).
             set_default_permissions(dpp::p_use_application_commands).
-            add_option(member)
+            add_option(member),
+        slashcommand().
+            set_name("sync_roles").
+            set_description("Synchronize server roles with database").
+            set_application_id(bot.me.id).
+            set_default_permissions(sync_p)
     };
     commands[0].options[0].description = "The chatterbox";
     commands[0].options[1].required = true;
