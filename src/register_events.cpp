@@ -8,9 +8,6 @@ void register_events(dpp::cluster& bot) {
     events::on_message_create(bot);
     events::on_message_delete(bot);
     events::on_message_delete_bulk(bot);
-    events::on_guild_role_create(bot);
-    events::on_guild_role_update(bot);
-    events::on_guild_role_delete(bot);
     events::on_guild_ban_remove(bot);
     bot.on_slashcommand(
         [&bot](const dpp::slashcommand_t& event) {

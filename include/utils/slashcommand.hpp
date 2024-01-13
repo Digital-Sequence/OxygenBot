@@ -7,8 +7,6 @@ namespace utils {
 struct slashcommand {
     std::string     command_name;
     dpp::snowflake  guild_id;
-    //guild_id will be deleted
-    const dpp::guild& guild;
     dpp::snowflake  channel_id;
     dpp::snowflake  sender_id;
     std::string     sender_username;
@@ -30,7 +28,7 @@ struct slashcommand {
     int64_t         messages_amount;
     std::string     reason;
     std::string     original_message;
-    slashcommand(const dpp::slashcommand_t&);
+    slashcommand(dpp::cluster&, const dpp::slashcommand_t&);
 };
 
 }

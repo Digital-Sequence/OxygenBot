@@ -50,7 +50,7 @@ void start_timer(dpp::cluster& bot) {
                 }
             );
             query =
-                string("SELECT rowid,GUILD_ID,USER_ID FROM bot.MUTES ") +
+                string("SELECT rowid, GUILD_ID, USER_ID FROM bot.MUTES ") +
                 string("WHERE EXPIRES IS NOT NULL AND EXPIRES <= ?");
             DB_exec(
                 query, binds,

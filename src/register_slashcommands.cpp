@@ -114,8 +114,8 @@ void register_slashcommands(dpp::cluster& bot) {
             set_default_permissions(dpp::p_use_application_commands).
             add_option(member),
         slashcommand().
-            set_name("sync_roles").
-            set_description("Synchronize server roles with database").
+            set_name("create_muted_role").
+            set_description("Needed for the /mute command").
             set_application_id(bot.me.id).
             set_default_permissions(sync_p)
     };

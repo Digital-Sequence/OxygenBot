@@ -5,6 +5,6 @@
 
 namespace commands {
 
-std::string sync_roles(dpp::cluster&, const utils::slashcommand&);
+std::string create_muted_role(dpp::cluster&, const utils::slashcommand&);
 
 }

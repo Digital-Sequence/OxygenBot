@@ -1,10 +1,10 @@
 #pragma once
 #include "commands/ban.hpp"
+#include "commands/create_muted_role.hpp"
 #include "commands/delete_messages.hpp"
 #include "commands/delwarn.hpp"
 #include "commands/member_info.hpp"
 #include "commands/mute.hpp"
-#include "commands/sync_roles.hpp"
 #include "commands/unban.hpp"
 #include "commands/unmute.hpp"
 #include "commands/warn.hpp"

@@ -7,11 +7,11 @@ using std::map;
 using std::string;
 using std::to_string;
 using commands::ban;
+using commands::create_muted_role;
 using commands::delete_messages;
 using commands::delwarn;
 using commands::member_info;
 using commands::mute;
-using commands::sync_roles;
 using commands::unban;
 using commands::unmute;
 using commands::warn;
@@ -20,7 +20,7 @@ using utils::slashcommand;
 
 void utils::run(dpp::cluster& bot, const dpp::slashcommand_t& event) {
     try {
-        slashcommand event_details(event);
+        slashcommand event_details(bot, event);
         bot.log(dpp::ll_info, "received " + event_details.original_message);
         string reply;
 
@@ -55,10 +55,10 @@ void utils::run(dpp::cluster& bot, const dpp::slashcommand_t& event) {
         if(event_details.command_name == "member_info")
             reply = member_info(bot, event_details);
         bool thinking = false;
-        if(event_details.command_name == "sync_roles") {
+        if(event_details.command_name == "create_muted_role") {
             event.thinking();
             thinking = true;
-            reply = sync_roles(bot, event_details);
+            reply = create_muted_role(bot, event_details);
         }
         // if statement, for commands that don't reply (will be added in future)
         if(!reply.empty())
@@ -68,7 +68,8 @@ void utils::run(dpp::cluster& bot, const dpp::slashcommand_t& event) {
         bot.log(dpp::ll_error, error.what());
         event.reply(
             "Command failed. Reason: internal error "
-            "or wrong command usage. In first case, contact admin"
+            "or wrong command usage. In first case, contact admin. "
+            "Otherwise, try /sync_roles command"
         );
     } catch(const dpp::logic_exception& error) {
         event.reply("Wrong command usage (logic exception)");
@@ -78,7 +79,8 @@ void utils::run(dpp::cluster& bot, const dpp::slashcommand_t& event) {
         bot.log(dpp::ll_error, error.what());
         event.reply(
             "Command failed. Reason: internal error "
-            "or wrong command usage. In first case, contact admin"
+            "or wrong command usage. In first case, contact admin. "
+            "Otherwise, try /sync_roles command"
         );
     }
 }

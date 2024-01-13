@@ -1,11 +1,9 @@
-#include <map>
 #include <variant> // std::get()
 #include <vector>
 #include "utils/slashcommand.hpp"
 #include "utils/stod.hpp"
 
 using std::get;
-using std::map;
 using std::string;
 using std::to_string;
 using std::vector;
@@ -15,15 +13,8 @@ using dpp::snowflake;
 using utils::stod;
 
 utils::slashcommand::slashcommand(
-    const dpp::slashcommand_t& event
-): guild(event.command.get_guild()) {
-    /* 
-        get_guild() make request to discord (if I'm no mistaken, check DPP
-        source code). This means, your bot will be rate limited, if there're
-        a lot of requests. This applies to get_issuing_user, and other
-        functions like this. You can read in dpp source code realization of
-        these functions. It's better to use cache (find_guild() for example)
-    */
+    dpp::cluster& bot, const dpp::slashcommand_t& event
+) {
     vector<command_data_option> options =
         event.command.get_command_interaction().options;
     dpp::interaction command = event.command;
@@ -53,10 +44,11 @@ utils::slashcommand::slashcommand(
             member_id           =
                 get<snowflake>(event.get_parameter("member"));
             guild_member member = command.get_resolved_member(member_id);
-            member_username     = member.get_user()->username;
-            member_global_name  = member.get_user()->global_name;
+            dpp::user_identified user = bot.user_get_cached_sync(member_id);
+            member_username     = user.username;
+            member_global_name  = user.global_name;
             member_nickname     = member.get_nickname();
-            member_bot          = member.get_user()->is_bot();
+            member_bot          = user.is_bot();
             member_mention      = member.get_mention();
             member_joined       = member.joined_at;
             member_registered   = ((member_id >> 22) + 1420070400000) / 1000;
