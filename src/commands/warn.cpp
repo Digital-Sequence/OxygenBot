@@ -1,70 +1,82 @@
-#include "commands/ban.hpp"
 #include "commands/warn.hpp"
-#include "utils/DB_bind_vector.hpp"
-#include "utils/DB_exec.hpp"
-#include "utils/DB_fetch_prepare.hpp"
+#include "globals.hpp"
+#include "commands/commands.hpp"
+#include "utils/DB_statement.hpp"
 #include "utils/slashcommand.hpp"
 
 using std::string;
 using std::to_string;
-using commands::ban;
-using utils::DB_bind_vector;
-using utils::DB_exec;
+using utils::DB_statement;
 using utils::slashcommand;
 
-string commands::warn(dpp::cluster& bot, slashcommand& event) {
-    DB_bind_vector binds;
-    binds.push<uint64_t>(event.guild_id, MYSQL_TYPE_LONGLONG);
-    binds.push<uint64_t>(event.member_id, MYSQL_TYPE_LONGLONG);
-    string query =
-        "SELECT rowid,COUNT FROM bot.WARNS WHERE GUILD_ID = ? AND USER_ID = ?";
-    int c(0);
-    DB_exec(query, binds, [&bot, &event, &c](MYSQL_STMT* statement) {
-        uint64_t rowid(0);
-        int COUNT(0);
-        DB_bind_vector binds;
-        binds.push<uint64_t>(rowid, MYSQL_TYPE_LONGLONG);
-        binds.push<int>(COUNT, MYSQL_TYPE_TINY);
-        MYSQL_RES* prepare_meta_result = DB_fetch_prepare(statement, binds);
-        mysql_stmt_fetch(statement);
-        if(!rowid) return;
-        c = COUNT + 1;
-        if(COUNT == 2) {
-            string query = "DELETE FROM bot.WARNS WHERE rowid = ?";
-            binds.clear();
-            binds.push<uint64_t>(rowid, MYSQL_TYPE_LONGLONG);
-            DB_exec(query, binds);
-            ban(bot, event);
-            return;
-        }
-        binds.clear();
-        binds.push<uint64_t>(rowid, MYSQL_TYPE_LONGLONG);
-        string query =
-            "UPDATE bot.WARNS SET COUNT = COUNT + 1 "
-            "WHERE rowid = ?";
-        DB_exec(query, binds);
-        mysql_free_result(prepare_meta_result);
-    });
-    if(!c) {
-        query = "INSERT INTO bot.WARNS VALUES(?, ?, ?, ?, ?)";
-        binds.clear();
-        uint64_t rowid(0);
-        int COUNT(1);
-        binds.push<uint64_t>(rowid, MYSQL_TYPE_LONGLONG);
-        binds.push<uint64_t>(event.guild_id, MYSQL_TYPE_LONGLONG);
-        binds.push<uint64_t>(event.member_id, MYSQL_TYPE_LONGLONG);
-        binds.push<int>(COUNT, MYSQL_TYPE_TINY);
-        binds.push();
-        DB_exec(query, binds);
-        return
-            string("Done! Member ") + event.member_mention +
-            " has 1/3 warnings";
+string commands::warn(dpp::cluster& bot, const slashcommand& event) {
+    DB_statement statement(
+        "SELECT MAX_WARNS, WARN_PUNISHMENT FROM bot.PREFERENCES "
+        "WHERE GUILD_ID = ? LIMIT 1"
+    );
+    int MAX_WARNS(0);
+    string WARN_PUNISHMENT(10, ' ');
+    statement.add_buffer<int>(MAX_WARNS, MYSQL_TYPE_TINY);
+    statement.add_buffer(WARN_PUNISHMENT);
+    statement.add_bind(event.guild_id);
+    statement.exec();
+    statement.fetch();
+    statement.free_result();
+
+    if(!MAX_WARNS) {
+        MAX_WARNS = numerics_config["default_max_warns"];
+        WARN_PUNISHMENT = config["default_warn_punishment"];
     }
-    if(c == 3)
+
+    statement.clear();
+    statement.clear_buffers();
+    statement.set_query(
+        "SELECT rowid, COUNT FROM bot.WARNS "
+        "WHERE GUILD_ID = ? AND USER_ID = ? LIMIT 1"
+    );
+    uint64_t rowid(0);
+    int COUNT(0);
+    statement.add_buffer<uint64_t>(rowid, MYSQL_TYPE_LONGLONG);
+    statement.add_buffer<int>(COUNT, MYSQL_TYPE_TINY);
+    statement.add_bind(event.member_id);
+    statement.exec();
+    statement.fetch();
+    statement.free_result();
+
+    statement.clear_buffers();
+    if(!rowid) {
+        statement.set_query("INSERT INTO bot.WARNS VALUES(0, ?, ?, 1, NULL)");
+        statement.exec();
+        statement.finish();
         return
             string("Done! Member ") + event.member_mention +
-            string(" has been banned due to 3 warnings");
+            " has 1/" + to_string(MAX_WARNS) + " warnings";
+    }
+    
+    statement.clear_binds();
+    if(++COUNT == MAX_WARNS) {
+        statement.set_query(
+            "DELETE FROM bot.WARNS WHERE rowid = ?"
+        );
+        statement.add_bind(rowid);
+        statement.exec();
+        statement.finish();
+        slashcommand_map.at(WARN_PUNISHMENT)(bot, event);
+        return 
+            string("Done! Member ") + event.member_mention +
+            string(" has been punished due to ") + to_string(MAX_WARNS) +
+            " warnings";
+    }
+    statement.clear_binds();
+    statement.set_query(
+        "UPDATE bot.WARNS SET COUNT = ? WHERE rowid = ?"
+    );
+    statement.add_bind(COUNT);
+    statement.add_bind(rowid);
+    statement.exec();
+    statement.finish();
     return
         string("Done! Member ") + event.member_mention +
-        string(" has 2/3 warnings");
+        string(" has ") + to_string(COUNT) + '/' + to_string(MAX_WARNS) +
+        string(" warnings");
 }

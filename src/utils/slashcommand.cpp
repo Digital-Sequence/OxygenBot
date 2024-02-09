@@ -54,10 +54,9 @@ utils::slashcommand::slashcommand(
             member_registered   = ((member_id >> 22) + 1420070400000) / 1000;
             original_message    = original_message + ' ' + member_mention;
         }
-        if(i.name == "member_username" && !member_username.empty()) {
-            member_username =
-                get<string>(event.get_parameter("member_username"));
-                original_message = original_message + " " + member_username;
+        if(i.name == "member_username" && member_username.empty()) {
+            member_username = get<string>(i.value);
+            original_message = original_message + " " + member_username;
         }
         if(i.name == "duration") {
             duration_str = get<string>(i.value);

@@ -7,13 +7,12 @@
 using std::invalid_argument;
 using std::map;
 using std::string;
-using std::to_string;
 using std::runtime_error;
-using dpp::snowflake;
 
 Connection_pool connections;
 string config_path;
 map<string, string> config;
+map<string, int> numerics_config;
 
 int main(int argc, char* argv[]) {
     try {

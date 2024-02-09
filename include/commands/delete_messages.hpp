@@ -5,6 +5,6 @@
 
 namespace commands {
 
-std::string delete_messages(dpp::cluster&, utils::slashcommand&);
+std::string delete_messages(dpp::cluster&, const utils::slashcommand&);
 
 }

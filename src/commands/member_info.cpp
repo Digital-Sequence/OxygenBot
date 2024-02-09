@@ -1,4 +1,3 @@
-#include <time.h>
 #include "commands/member_info.hpp"
 #include "utils/date_str.hpp"
 #include "utils/time_str.hpp"
@@ -9,7 +8,7 @@ using utils::date_str;
 using utils::slashcommand;
 using utils::time_str;
 
-string commands::member_info(dpp::cluster& bot, slashcommand& event) {
+string commands::member_info(dpp::cluster& bot, const slashcommand& event) {
     string reply;
     if(event.member_id) {
         reply =

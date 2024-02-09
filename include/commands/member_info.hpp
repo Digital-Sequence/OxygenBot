@@ -5,6 +5,6 @@
 
 namespace commands {
 
-std::string member_info(dpp::cluster&, utils::slashcommand&);
+std::string member_info(dpp::cluster&, const utils::slashcommand&);
 
 }

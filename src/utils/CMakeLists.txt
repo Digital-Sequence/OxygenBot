@@ -1,2 +1,6 @@
 file(GLOB src CONFIGURE_DEPENDS "*.cpp")
 target_sources(${PROJECT_NAME} PRIVATE ${src})
+target_sources(DB_statement_test PRIVATE DB_statement.cpp)
+target_sources(DB_statement_test PRIVATE DB_connect.cpp)
+target_sources(DB_statement_test PRIVATE DB_bind_vector.cpp)
+target_sources(DB_statement_test PRIVATE DB_buffer_vector.cpp)

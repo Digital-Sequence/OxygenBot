@@ -1,63 +1,47 @@
-#include <stdexcept>
-#include <variant>
-#include "commands/delete_messages.hpp"
 #include "commands/mute.hpp"
-#include "utils/DB_bind_vector.hpp"
-#include "utils/DB_exec.hpp"
-#include "utils/DB_fetch_prepare.hpp"
+#include <stdexcept>
+#include "commands/delete_messages.hpp"
+#include "utils/DB_statement.hpp"
 
 using std::string;
-using std::to_string;
-using dpp::snowflake;
-using utils::DB_bind_vector;
-using utils::DB_exec;
-using utils::DB_fetch_prepare;
+using utils::DB_statement;
 using utils::slashcommand;
 
-string commands::mute(dpp::cluster& bot, slashcommand& event) {
-    string query =
-        "SELECT rowid FROM bot.MUTES WHERE GUILD_ID = ? AND USER_ID = ?";
-    DB_bind_vector binds;
-    binds.push<uint64_t>(event.guild_id, MYSQL_TYPE_LONGLONG);
-    binds.push<uint64_t>(event.member_id, MYSQL_TYPE_LONGLONG);
-    uint64_t rowid(0);
-    DB_exec(query, binds, [&rowid](MYSQL_STMT* statement) {
-        DB_bind_vector binds;
-        binds.push<uint64_t>(rowid, MYSQL_TYPE_LONGLONG);
-        MYSQL_RES* prepare_meta_result = DB_fetch_prepare(statement, binds);
-        mysql_stmt_fetch(statement);
-        mysql_free_result(prepare_meta_result);
-    });
-    if(rowid) return
-        string("Member ") + event.member_mention + " has already been muted";
-
-    query =
+string commands::mute(dpp::cluster& bot, const slashcommand& event) {
+    DB_statement statement(
         "SELECT ROLE_ID FROM bot.ROLES "
-        "WHERE GUILD_ID = ? AND NAME = 'muted'";
-    binds.clear();
-    binds.push<uint64_t>(event.guild_id, MYSQL_TYPE_LONGLONG);
+        "WHERE GUILD_ID = ? AND NAME = 'muted' LIMIT 1");
     uint64_t ROLE_ID(0);
-    DB_exec(query, binds, [&ROLE_ID](MYSQL_STMT* statement) {
-        DB_bind_vector binds;
-        binds.push<uint64_t>(ROLE_ID, MYSQL_TYPE_LONGLONG);
-        MYSQL_RES* prepare_meta_result = DB_fetch_prepare(statement, binds);
-        mysql_stmt_fetch(statement);
-        mysql_free_result(prepare_meta_result);
-    });
-    bot.guild_member_add_role(event.guild_id, event.member_id, ROLE_ID);
+    statement.add_buffer<uint64_t>(ROLE_ID, MYSQL_TYPE_LONGLONG);
+    statement.add_bind(event.guild_id);
+    statement.exec();
+    statement.fetch();
+    statement.free_result();
+    if(!ROLE_ID) {
+        statement.finish();
+        return string("Cannot mute member ") + event.member_mention +
+            ". Reason: no muted role found. Try to use /create_muted_role or "
+            "contact admin";
+    }
     
-    query = "INSERT INTO bot.MUTES VALUES(?, ?, ?, ?)";
-    rowid = 0;
-    uint64_t EXPIRES(0);
-    binds.clear();
-    binds.push<uint64_t>(rowid, MYSQL_TYPE_LONGLONG);
-    binds.push<uint64_t>(event.guild_id, MYSQL_TYPE_LONGLONG);
-    binds.push<uint64_t>(event.member_id, MYSQL_TYPE_LONGLONG);
-    if(event.duration) {
-        EXPIRES = std::time(0) + event.duration;
-        binds.push<uint64_t>(EXPIRES, MYSQL_TYPE_LONGLONG);
-    } else binds.push(); // push null value to binds
-    DB_exec(query, binds);
+    statement.set_query("INSERT INTO bot.MUTES VALUES(?, ?, ?, ?)");
+    statement.add_bind(event.member_id);
+    statement.add_bind(std::time(0));
+    if(event.duration) statement.add_bind(std::time(0) + event.duration);
+    else statement.add_bind();
+    try { statement.exec(); }
+    catch(const std::runtime_error& error) {
+        statement.finish();
+        string error_message = error.what();
+        error_message = error_message.substr(0, 15);
+        if(error_message == "Duplicate entry")
+            return string("Member ") + event.member_mention +
+                " has already been muted";
+        else throw error;
+    }
+    statement.finish();
+
+    bot.guild_member_add_role(event.guild_id, event.member_id, ROLE_ID);
 
     if(event.messages_amount) delete_messages(bot, event);
     

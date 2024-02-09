@@ -5,6 +5,6 @@
 
 namespace commands {
 
-std::string delwarn(dpp::cluster&, utils::slashcommand&);
+std::string delwarn(dpp::cluster&, const utils::slashcommand&);
 
 }

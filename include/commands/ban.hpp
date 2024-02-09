@@ -5,6 +5,6 @@
 
 namespace commands {
 
-std::string ban(dpp::cluster&, utils::slashcommand&);
+std::string ban(dpp::cluster&, const utils::slashcommand&);
 
 }

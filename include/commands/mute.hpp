@@ -5,6 +5,6 @@
 
 namespace commands {
 
-std::string mute(dpp::cluster&, utils::slashcommand&);
+std::string mute(dpp::cluster&, const utils::slashcommand&);
 
 }

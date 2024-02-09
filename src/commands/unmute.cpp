@@ -1,51 +1,88 @@
 #include "commands/unmute.hpp"
-#include "utils/DB_bind_vector.hpp"
-#include "utils/DB_exec.hpp"
-#include "utils/DB_fetch_prepare.hpp"
+#include "utils/DB_statement.hpp"
+#include "utils/slashcommand.hpp"
 
 using std::string;
 using dpp::snowflake;
 using dpp::utility::user_mention;
-using utils::DB_bind_vector;
-using utils::DB_exec;
+using utils::DB_statement;
+using utils::slashcommand;
 
 string commands::unmute(
-    dpp::cluster& bot, snowflake GUILD_ID,
-    snowflake USER_ID, string reason
+    dpp::cluster& bot, const slashcommand& event
 ) {
-    string query =
-        "SELECT rowid FROM bot.MUTES WHERE GUILD_ID = ? AND USER_ID = ?";
-    DB_bind_vector binds;
-    binds.push<uint64_t>(GUILD_ID, MYSQL_TYPE_LONGLONG);
-    binds.push<uint64_t>(USER_ID, MYSQL_TYPE_LONGLONG);
-    uint64_t rowid(0);
-    DB_exec(query, binds, [&rowid](MYSQL_STMT* statement) {
-        DB_bind_vector binds;
-        binds.push<uint64_t>(rowid, MYSQL_TYPE_LONGLONG);
-        MYSQL_RES* prepare_meta_result = DB_fetch_prepare(statement, binds);
-        mysql_stmt_fetch(statement);
-        mysql_free_result(prepare_meta_result);
-    });
-    if(!rowid)
-        return string("Member ") + user_mention(USER_ID) + " isn't muted";
+    DB_statement statement(
+        "SELECT DATE FROM bot.MUTES WHERE GUILD_ID = ? AND USER_ID = ?"
+    );
+    uint64_t DATE(0);
+    statement.add_buffer<uint64_t>(DATE, MYSQL_TYPE_LONGLONG);
+    statement.add_bind(event.guild_id);
+    statement.add_bind(event.member_id);
+    statement.exec();
+    statement.fetch();
+    statement.free_result();
+    if(!DATE) return string("Member ") +
+        user_mention(event.member_id) + " isn't muted";
     
-    query = "DELETE FROM bot.MUTES WHERE rowid = ?";
-    binds.clear();
-    binds.push<uint64_t>(rowid, MYSQL_TYPE_LONGLONG);
-    DB_exec(query, binds);
+    statement.set_query(
+        "DELETE FROM bot.MUTES WHERE GUILD_ID = ? and USER_ID = ?"
+    );
+    statement.exec();
 
-    query =
-        "SELECT ROLE_ID FROM bot.ROLES WHERE GUILD_ID = ? AND NAME = 'muted'";
-    binds.clear();
-    binds.push<uint64_t>(GUILD_ID, MYSQL_TYPE_LONGLONG);
+    statement.set_query(
+        "INSERT INTO bot.MUTES_CANCELLED VALUES(0, ?, ?, ?, ?)"
+    );
+    statement.add_bind(DATE);
+    statement.add_bind(std::time(0));
+    statement.exec();
+
+    statement.clear_all();
+    statement.set_query(
+        "SELECT ROLE_ID FROM bot.ROLES "
+        "WHERE GUILD_ID = ? AND NAME = 'muted' LIMIT 1"
+    );
     uint64_t ROLE_ID(0);
-    DB_exec(query, binds, [&ROLE_ID](MYSQL_STMT* statement) {
-        DB_bind_vector binds;
-        binds.push<uint64_t>(ROLE_ID, MYSQL_TYPE_LONGLONG);
-        MYSQL_RES* prepare_meta_result = DB_fetch_prepare(statement, binds);
-        mysql_stmt_fetch(statement);
-        mysql_free_result(prepare_meta_result);
-    });
+    statement.add_buffer<uint64_t>(ROLE_ID, MYSQL_TYPE_LONGLONG);
+    statement.add_bind(event.guild_id);
+    statement.exec();
+    statement.fetch();
+    statement.free_result();
+    bot.guild_member_delete_role(event.guild_id, event.member_id, ROLE_ID);
+    statement.finish();
+
+    return
+        string("Done! Member ") + user_mention(event.member_id) + " unmuted";
+}
+
+void commands::unmute(
+    dpp::cluster& bot, const snowflake GUILD_ID, const snowflake USER_ID,
+    const uint64_t DATE
+) { 
+    DB_statement statement(
+        "DELETE FROM bot.MUTES WHERE GUILD_ID = ? and USER_ID = ?"
+    );
+    statement.add_bind(GUILD_ID);
+    statement.add_bind(USER_ID);
+    statement.exec();
+
+    statement.set_query(
+        "INSERT INTO bot.MUTES_CANCELLED VALUES(0, ?, ?, ?, ?)"
+    );
+    statement.add_bind(DATE);
+    statement.add_bind(std::time(0));
+    statement.exec();
+
+    statement.clear_all();
+    statement.set_query(
+        "SELECT ROLE_ID FROM bot.ROLES "
+        "WHERE GUILD_ID = ? AND NAME = 'muted' LIMIT 1"
+    );
+    uint64_t ROLE_ID(0);
+    statement.add_buffer<uint64_t>(ROLE_ID, MYSQL_TYPE_LONGLONG);
+    statement.add_bind(GUILD_ID);
+    statement.exec();
+    statement.fetch();
+    statement.free_result();
     bot.guild_member_delete_role(GUILD_ID, USER_ID, ROLE_ID);
-    return string("Done! Member ") + user_mention(USER_ID) + " unmuted";
+    statement.finish();
 }

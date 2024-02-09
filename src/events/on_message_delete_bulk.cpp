@@ -1,43 +1,45 @@
+#include "events/on_message_delete_bulk.hpp"
 #include <stdexcept>
 #include <string>
-#include "events/on_message_delete_bulk.hpp"
-#include "utils/DB_bind_vector.hpp"
-#include "utils/DB_exec.hpp"
+#include "utils/DB_statement.hpp"
 
 using std::runtime_error;
 using std::string;
 using std::to_string;
 using dpp::snowflake;
 using std::vector;
-using utils::DB_bind_vector;
+using utils::DB_statement;
 
 void events::on_message_delete_bulk(dpp::cluster& bot) {
     bot.on_message_delete_bulk(
         [&bot](const dpp::message_delete_bulk_t& event) {
             snowflake GUILD_ID      = event.deleting_guild->id;
             snowflake CHANNEL_ID    = event.deleting_channel->id;
-            snowflake MESSAGE_ID(0);
             try {
                 vector<snowflake> messages  = event.deleted;
 
-                DB_bind_vector binds;
-                binds.push<uint64_t>(GUILD_ID, MYSQL_TYPE_LONGLONG);
-                binds.push<uint64_t>(CHANNEL_ID, MYSQL_TYPE_LONGLONG);
-                binds.push<uint64_t>(MESSAGE_ID, MYSQL_TYPE_LONGLONG);
-                string query =
-                    "DELETE FROM bot.MESSAGES WHERE GUILD_ID = ? "
-                    "AND CHANNEL_ID = ? AND MESSAGE_ID = ?";
+                DB_statement statement(
+                    "UPDATE bot.MESSAGES SET DELETED = ? "
+                    "WHERE GUILD_ID = ? AND CHANNEL_ID = ? "
+                    "AND MESSAGE_ID = ? AND DELETED IS NULL"
+                );
+                statement.add_bind(std::time(0));
+                statement.add_bind(GUILD_ID);
+                statement.add_bind(CHANNEL_ID);
+                statement.add_bind(0);
                     
                 for(auto& i : messages) {
-                    MESSAGE_ID = i;
-                    utils::DB_exec(query, binds);
+                    statement.set_bind_value(3, i);
+                    statement.exec();
                 }
+                statement.finish();
             } catch(const runtime_error& error) {
                 bot.log(
                     dpp::ll_error,
                     to_string(GUILD_ID) +
-                    string("| error occured while deleting message info. ") +
-                    error.what()
+                    string(
+                        "| error occured while marking deleted messages. "
+                    ) + error.what()
                 );
             }
         }

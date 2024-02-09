@@ -1,14 +1,13 @@
+#include "events/on_message_delete.hpp"
 #include <stdexcept>
 #include <string>
-#include "events/on_message_delete.hpp"
-#include "utils/DB_bind_vector.hpp"
-#include "utils/DB_exec.hpp"
+#include "utils/DB_statement.hpp"
 
 using std::runtime_error;
 using std::string;
 using std::to_string;
 using dpp::snowflake;
-using utils::DB_bind_vector;
+using utils::DB_statement;
 
 void events::on_message_delete(dpp::cluster& bot) {
     bot.on_message_delete(
@@ -17,19 +16,22 @@ void events::on_message_delete(dpp::cluster& bot) {
             snowflake CHANNEL_ID    = event.channel_id;
             snowflake MESSAGE_ID    = event.id;
             try {
-                DB_bind_vector binds;
-                binds.push<uint64_t>(GUILD_ID, MYSQL_TYPE_LONGLONG);
-                binds.push<uint64_t>(CHANNEL_ID, MYSQL_TYPE_LONGLONG);
-                binds.push<uint64_t>(MESSAGE_ID, MYSQL_TYPE_LONGLONG);
-                string query =
-                    "DELETE FROM bot.MESSAGES WHERE GUILD_ID = ? "
-                    "AND CHANNEL_ID = ? AND MESSAGE_ID = ?";
-                utils::DB_exec(query);
+                DB_statement statement(
+                    "UPDATE bot.MESSAGES SET DELETED = ? "
+                    "WHERE GUILD_ID = ? AND CHANNEL_ID = ? "
+                    "AND MESSAGE_ID = ? AND DELETED IS NULL"
+                );
+                statement.add_bind(std::time(0));
+                statement.add_bind(GUILD_ID);
+                statement.add_bind(CHANNEL_ID);
+                statement.add_bind(MESSAGE_ID);
+                statement.exec();
+                statement.finish();
             } catch(const runtime_error& error) {
                 bot.log(
                     dpp::ll_error,
                     to_string(GUILD_ID) +
-                    string("| error occured while deleting message info. ") +
+                    string("| error occured while marking deleted message. ") +
                     error.what()
                 );
             }

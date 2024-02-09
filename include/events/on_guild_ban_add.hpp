@@ -3,6 +3,6 @@
 
 namespace events {
 
-void on_channel_delete(dpp::cluster&);
+void on_guild_ban_add(dpp::cluster&);
 
 }

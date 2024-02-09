@@ -1,22 +1,24 @@
+#include "commands/delete_messages.hpp"
 #include <ctime>
 #include <queue>
 #include <stdexcept>
-#include "commands/delete_messages.hpp"
-#include "utils/DB_bind_vector.hpp"
-#include "utils/DB_exec.hpp"
-#include "utils/DB_fetch_prepare.hpp"
+#include "utils/DB_statement.hpp"
 
 using std::string;
 using std::to_string;
 using std::vector;
 using dpp::snowflake;
-using utils::DB_bind_vector;
-using utils::DB_exec;
-using utils::DB_fetch_prepare;
+using utils::DB_statement;
 using utils::slashcommand;
 
-string commands::delete_messages(dpp::cluster& bot, slashcommand& event) {
-    DB_bind_vector binds;
+string commands::delete_messages(
+    dpp::cluster& bot, const slashcommand& event
+) {
+    DB_statement statement(
+        "SELECT MESSAGE_ID FROM bot.MESSAGES WHERE GUILD_ID = ? "
+        "AND CHANNEL_ID = ? AND USER_ID = ? AND MESSAGE_ID > ? "
+        "AND DELETED IS NULL ORDER BY MESSAGE_ID DESC LIMIT ?"
+    );
     uint64_t two_weeks_ago =
         1000 * ((uint64_t)std::time(0) - 1209570 - 1420070400) << 22;
     /*
@@ -28,29 +30,19 @@ string commands::delete_messages(dpp::cluster& bot, slashcommand& event) {
         snowflakes store time in milliseconds.
         https://discord.com/developers/docs/reference#snowflakes
     */
+    snowflake MESSAGE_ID(0);
+    statement.add_buffer<uint64_t>(MESSAGE_ID, MYSQL_TYPE_LONGLONG);
+    statement.add_bind(event.guild_id);
+    statement.add_bind(event.channel_id);
+    statement.add_bind(event.member_id);
+    statement.add_bind(two_weeks_ago);
+    statement.add_bind(event.messages_amount);
+    statement.exec();
     
-    binds.push<uint64_t>(event.guild_id, MYSQL_TYPE_LONGLONG);
-    binds.push<uint64_t>(event.channel_id, MYSQL_TYPE_LONGLONG);
-    binds.push<uint64_t>(event.member_id, MYSQL_TYPE_LONGLONG);
-    binds.push<uint64_t>(two_weeks_ago, MYSQL_TYPE_LONGLONG);
-    binds.push<int64_t>(event.messages_amount, MYSQL_TYPE_SHORT);
-    
-    string query =
-        "SELECT MESSAGE_ID FROM bot.MESSAGES WHERE GUILD_ID = ? "
-        "AND CHANNEL_ID = ? AND USER_ID = ? AND MESSAGE_ID > ? "
-        "ORDER BY rowid DESC LIMIT ?";
     std::queue<snowflake> messages = {};
-
-    DB_exec(query, binds, [&messages](MYSQL_STMT* statement) {
-        snowflake MESSAGE_ID(0);
-        DB_bind_vector binds;
-        binds.push<uint64_t>(MESSAGE_ID, MYSQL_TYPE_LONGLONG);
-        MYSQL_RES* prepare_meta_result =
-            DB_fetch_prepare(statement, binds);
-        while(!mysql_stmt_fetch(statement) && MESSAGE_ID)
-            messages.push(MESSAGE_ID);
-        mysql_free_result(prepare_meta_result);
-    });
+    while(!statement.fetch() && MESSAGE_ID) messages.push(MESSAGE_ID);
+    statement.free_result();
+    statement.finish();
 
     int amount = messages.size();
     if(amount < 2) {
@@ -59,6 +51,7 @@ string commands::delete_messages(dpp::cluster& bot, slashcommand& event) {
         if(event.reason != "") reply = reply + ". Reason: " + event.reason;
         return reply;
     }
+    
     for(int i = messages.size(); i > 0; i = messages.size()) {
         if(i > 100) i = 100;
         vector<snowflake> messages_to_delete;

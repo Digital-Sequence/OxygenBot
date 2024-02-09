@@ -1,0 +1,7 @@
+token=Deus Ex
+DB_user=jmanderley
+DB_password=knight_killer
+DB_port=6
+DB_unix_socket=/unatco/system/run/DB.sock
+default_max_warns
+default_warn_punishment=ban
