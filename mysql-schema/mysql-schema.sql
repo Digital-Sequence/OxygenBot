@@ -3,6 +3,7 @@
 --
 
 CREATE DATABASE `bot`;
+
 USE `bot`;
 
 --
@@ -11,13 +12,26 @@ USE `bot`;
 
 DROP TABLE IF EXISTS `BANS`;
 CREATE TABLE `BANS` (
-  `rowid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `GUILD_ID` bigint(20) unsigned NOT NULL,
   `USER_ID` bigint(20) unsigned NOT NULL,
   `USERNAME` text DEFAULT NULL,
   `DATE` bigint(20) unsigned NOT NULL,
   `EXPIRES` bigint(20) unsigned DEFAULT NULL,
-  `CANCELLED` bit(1) DEFAULT NULL,
+  PRIMARY KEY (`GUILD_ID`,`USER_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Table structure for table `BANS_CANCELLED`
+--
+
+DROP TABLE IF EXISTS `BANS_CANCELLED`;
+CREATE TABLE `BANS_CANCELLED` (
+  `rowid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `GUILD_ID` bigint(20) unsigned NOT NULL,
+  `USER_ID` bigint(20) unsigned NOT NULL,
+  `USERNAME` text NOT NULL,
+  `DATE` bigint(20) unsigned NOT NULL,
+  `CANCELLED` bigint(20) unsigned NOT NULL,
   PRIMARY KEY (`rowid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -27,13 +41,12 @@ CREATE TABLE `BANS` (
 
 DROP TABLE IF EXISTS `MESSAGES`;
 CREATE TABLE `MESSAGES` (
-  `rowid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `GUILD_ID` bigint(20) unsigned NOT NULL,
   `CHANNEL_ID` bigint(20) unsigned NOT NULL,
   `USER_ID` bigint(20) unsigned NOT NULL,
   `MESSAGE_ID` bigint(20) unsigned NOT NULL,
-  `DELETED` bit(1) DEFAULT NULL,
-  PRIMARY KEY (`rowid`)
+  `DELETED` bigint(20) unsigned DEFAULT NULL,
+  PRIMARY KEY (`GUILD_ID`,`CHANNEL_ID`,`USER_ID`,`MESSAGE_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -42,12 +55,24 @@ CREATE TABLE `MESSAGES` (
 
 DROP TABLE IF EXISTS `MUTES`;
 CREATE TABLE `MUTES` (
+  `GUILD_ID` bigint(20) unsigned NOT NULL,
+  `USER_ID` bigint(20) unsigned NOT NULL,
+  `DATE` bigint(20) unsigned NOT NULL,
+  `EXPIRES` bigint(20) unsigned DEFAULT NULL,
+  PRIMARY KEY (`GUILD_ID`,`USER_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Table structure for table `MUTES_CANCELLED`
+--
+
+DROP TABLE IF EXISTS `MUTES_CANCELLED`;
+CREATE TABLE `MUTES_CANCELLED` (
   `rowid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `GUILD_ID` bigint(20) unsigned NOT NULL,
   `USER_ID` bigint(20) unsigned NOT NULL,
-  `EXPIRES` bigint(20) unsigned DEFAULT NULL,
   `DATE` bigint(20) unsigned NOT NULL,
-  `CANCELLED` bit(1) DEFAULT NULL,
+  `CANCELLED` bigint(20) unsigned NOT NULL,
   PRIMARY KEY (`rowid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -69,37 +94,10 @@ CREATE TABLE `PREFERENCES` (
 
 DROP TABLE IF EXISTS `ROLES`;
 CREATE TABLE `ROLES` (
-  `rowid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `GUILD_ID` bigint(20) unsigned NOT NULL,
   `ROLE_ID` bigint(20) unsigned NOT NULL,
   `NAME` text DEFAULT NULL,
-  PRIMARY KEY (`rowid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Table structure for table `UNBANS`
---
-
-DROP TABLE IF EXISTS `UNBANS`;
-CREATE TABLE `UNBANS` (
-  `rowid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `GUILD_ID` bigint(20) unsigned NOT NULL,
-  `USER_ID` bigint(20) unsigned NOT NULL,
-  `DATE` bigint(20) unsigned NOT NULL,
-  PRIMARY KEY (`rowid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Table structure for table `UNMUTES`
---
-
-DROP TABLE IF EXISTS `UNMUTES`;
-CREATE TABLE `UNMUTES` (
-  `rowid` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `GUILD_ID` bigint(20) unsigned NOT NULL,
-  `USER_ID` bigint(20) unsigned NOT NULL,
-  `DATE` bigint(20) unsigned NOT NULL,
-  PRIMARY KEY (`rowid`)
+  PRIMARY KEY (`GUILD_ID`,`ROLE_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
