@@ -108,6 +108,13 @@ void register_slashcommands(dpp::cluster& bot) {
             add_option(member_username).
             add_option(reason),
         slashcommand().
+            set_name("unban_id").
+            set_description("Unban a member by id").
+            set_application_id(bot.me.id).
+            set_default_permissions(ban_p).
+            add_option(member).
+            add_option(reason),
+        slashcommand().
             set_name("member_info").
             set_description("Get member info").
             set_application_id(bot.me.id).
@@ -128,9 +135,10 @@ void register_slashcommands(dpp::cluster& bot) {
     commands[5].options[0].description = "The fool to kick";
     commands[6].options[0].description = "The villain to ban";
     commands[7].options[0].description = "The member to unban";
-    commands[8].options[0].description =
+    commands[8].options[0].description = "The member to unban by id";
+    commands[9].options[0].description =
         "If no member provided, your info will be shown";
-    commands[8].options[0].required = false;
+    commands[9].options[0].required = false;
 
     bot.global_bulk_command_create(commands);
 }

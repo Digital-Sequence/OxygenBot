@@ -8,6 +8,7 @@
 #include "commands/member_info.hpp"
 #include "commands/mute.hpp"
 #include "commands/unban.hpp"
+#include "commands/unban_id.hpp"
 #include "commands/unmute.hpp"
 #include "commands/warn.hpp"
 
@@ -21,6 +22,7 @@ const static std::map<std::string, PF> slashcommand_map = {
     { "member_info", commands::member_info },
     { "mute", commands::mute },
     { "unban", commands::unban },
+    { "unban_id", commands::unban_id },
     { "unmute", commands::unmute },
     { "warn", commands::warn }
 };
