@@ -124,7 +124,14 @@ void register_slashcommands(dpp::cluster& bot) {
             set_name("create_muted_role").
             set_description("Needed for the /mute command").
             set_application_id(bot.me.id).
-            set_default_permissions(sync_p)
+            set_default_permissions(sync_p),
+        slashcommand().
+            set_name("clear_warns").
+            set_description("Clear member's warns").
+            set_application_id(bot.me.id).
+            set_default_permissions(mute_p).
+            add_option(member).
+            add_option(reason)
     };
     commands[0].options[0].description = "The chatterbox";
     commands[0].options[1].required = true;
@@ -139,6 +146,8 @@ void register_slashcommands(dpp::cluster& bot) {
     commands[9].options[0].description =
         "If no member provided, your info will be shown";
     commands[9].options[0].required = false;
+    commands[11].options[0].description =
+        "The member whose warns you want to clear";
 
     bot.global_bulk_command_create(commands);
 }

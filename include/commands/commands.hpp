@@ -2,6 +2,7 @@
 #include <map>
 #include <string>
 #include "commands/ban.hpp"
+#include "commands/clear_warns.hpp"
 #include "commands/create_muted_role.hpp"
 #include "commands/delete_messages.hpp"
 #include "commands/delwarn.hpp"
@@ -16,6 +17,7 @@ typedef std::string (*PF) (dpp::cluster&, const utils::slashcommand&);
 
 const static std::map<std::string, PF> slashcommand_map = {
     { "ban", commands::ban },
+    { "clear_warns", commands::clear_warns },
     { "create_muted_role", commands::create_muted_role },
     { "delete_messages", commands::delete_messages },
     { "delwarn", commands::delwarn },
