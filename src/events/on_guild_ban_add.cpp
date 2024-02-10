@@ -23,7 +23,7 @@ void events::on_guild_ban_add(dpp::cluster& bot) {
                 dpp::user_identified user =
                     bot.user_get_cached_sync(USER_ID);
                 statement.add_bind(user.username);
-                statement.add_bind(std::time(0));
+                statement.add_bind(std::time(nullptr));
                 try {
                     statement.exec();
                     statement.finish();

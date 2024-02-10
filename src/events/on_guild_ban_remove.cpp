@@ -39,7 +39,7 @@ void events::on_guild_ban_remove(dpp::cluster& bot) {
                 );
                 statement.add_bind(USERNAME);
                 statement.add_bind(DATE);
-                statement.add_bind(std::time(0));
+                statement.add_bind(std::time(nullptr));
                 statement.exec();
                 statement.finish();
             } catch(const runtime_error& error) {

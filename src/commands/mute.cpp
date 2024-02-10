@@ -26,8 +26,8 @@ string commands::mute(dpp::cluster& bot, const slashcommand& event) {
     
     statement.set_query("INSERT INTO bot.MUTES VALUES(?, ?, ?, ?)");
     statement.add_bind(event.member_id);
-    statement.add_bind(std::time(0));
-    if(event.duration) statement.add_bind(std::time(0) + event.duration);
+    statement.add_bind(std::time(nullptr));
+    if(event.duration) statement.add_bind(std::time(nullptr) + event.duration);
     else statement.add_bind();
     try { statement.exec(); }
     catch(const std::runtime_error& error) {

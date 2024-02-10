@@ -23,7 +23,7 @@ void events::on_message_delete_bulk(dpp::cluster& bot) {
                     "WHERE GUILD_ID = ? AND CHANNEL_ID = ? "
                     "AND MESSAGE_ID = ? AND DELETED IS NULL"
                 );
-                statement.add_bind(std::time(0));
+                statement.add_bind(std::time(nullptr));
                 statement.add_bind(GUILD_ID);
                 statement.add_bind(CHANNEL_ID);
                 statement.add_bind(0);

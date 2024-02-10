@@ -20,7 +20,7 @@ void start_timer(dpp::cluster& bot) {
     statement.add_bind(0);
     bot.start_timer([&](dpp::timer t) {
         try {
-            statement.set_bind_value(0, std::time(0));
+            statement.set_bind_value(0, std::time(nullptr));
             statement.set_query(
                 "SELECT GUILD_ID, USER_ID, DATE FROM bot.BANS "
                 "WHERE EXPIRES IS NOT NULL AND EXPIRES <= ?"

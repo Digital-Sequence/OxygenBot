@@ -20,7 +20,7 @@ string commands::delete_messages(
         "AND DELETED IS NULL ORDER BY MESSAGE_ID DESC LIMIT ?"
     );
     uint64_t two_weeks_ago =
-        1000 * ((uint64_t)std::time(0) - 1209570 - 1420070400) << 22;
+        1000 * ((uint64_t)std::time(nullptr) - 1209570 - 1420070400) << 22;
     /*
         1000 * (Current time - (2 weeks - 30 seconds) - 1420070400)
         Current time depends on your system time settings, so it's necessary

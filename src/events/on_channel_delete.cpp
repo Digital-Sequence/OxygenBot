@@ -19,7 +19,7 @@ void events::on_channel_delete(dpp::cluster& bot) {
                     "UPDATE bot.MESSAGES SET DELETED = ? "
                     "WHERE GUILD_ID = ? AND CHANNEL_ID = ?"
                 );
-                statement.add_bind(std::time(0));
+                statement.add_bind(std::time(nullptr));
                 statement.add_bind(GUILD_ID);
                 statement.add_bind(CHANNEL_ID);
                 statement.exec();

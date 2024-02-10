@@ -33,7 +33,7 @@ string commands::unmute(
         "INSERT INTO bot.MUTES_CANCELLED VALUES(0, ?, ?, ?, ?)"
     );
     statement.add_bind(DATE);
-    statement.add_bind(std::time(0));
+    statement.add_bind(std::time(nullptr));
     statement.exec();
 
     statement.clear_all();
@@ -69,7 +69,7 @@ void commands::unmute(
         "INSERT INTO bot.MUTES_CANCELLED VALUES(0, ?, ?, ?, ?)"
     );
     statement.add_bind(DATE);
-    statement.add_bind(std::time(0));
+    statement.add_bind(std::time(nullptr));
     statement.exec();
 
     statement.clear_all();
