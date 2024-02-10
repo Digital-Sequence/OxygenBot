@@ -10,6 +10,7 @@ using std::vector;
 using dpp::command_data_option;
 using dpp::guild_member;
 using dpp::snowflake;
+using dpp::utility::user_mention;
 using utils::stod;
 
 utils::slashcommand::slashcommand(
@@ -43,14 +44,24 @@ utils::slashcommand::slashcommand(
         if(i.name == "member") {
             member_id           =
                 get<snowflake>(event.get_parameter("member"));
-            guild_member member = command.get_resolved_member(member_id);
+            guild_member member;
+            std::cout << member_id << std::endl;
+            try {
+                member = command.get_resolved_member(member_id);
+            } catch(const dpp::logic_exception& error) {
+                try {
+                    member = bot.guild_get_member_sync(guild_id, member_id);
+                } catch(const dpp::rest_exception& error) {}
+            }
+            if(member.user_id) {
+                member_nickname     = member.get_nickname();
+                member_joined       = member.joined_at;
+            }
             dpp::user_identified user = bot.user_get_cached_sync(member_id);
             member_username     = user.username;
             member_global_name  = user.global_name;
-            member_nickname     = member.get_nickname();
             member_bot          = user.is_bot();
-            member_mention      = member.get_mention();
-            member_joined       = member.joined_at;
+            member_mention      = user_mention(member_id);
             member_registered   = ((member_id >> 22) + 1420070400000) / 1000;
             original_message    = original_message + ' ' + member_mention;
         }

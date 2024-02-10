@@ -12,7 +12,7 @@ using utils::DB_statement;
 void events::on_guild_ban_remove(dpp::cluster& bot) {
     bot.on_guild_ban_remove(
         [&bot](const dpp::guild_ban_remove_t& event) {
-            string USERNAME(32, ' ');
+            string USERNAME(32, '\0');
             uint64_t DATE(0);
             const snowflake GUILD_ID  = event.unbanning_guild->id;
             const snowflake USER_ID   = event.unbanned.id;
